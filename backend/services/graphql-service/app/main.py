@@ -47,3 +47,5 @@ async def graphql_ui():
     # static/graphql_ui.html を読み込んで返す
     with open(os.path.join(static_dir, "graphql_ui.html")) as f:
         return f.read()
+
+print("GraphQL service is running...")
