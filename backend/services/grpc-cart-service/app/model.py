@@ -3,7 +3,7 @@ from db.db import get_connection
 
 
 # カートを新しく作成する関数
-def create_cart(id: str, product_id: str, quantity: int):
+def create_cart(id: str, product_id: str, quantity: int) -> None:
     # データベースに接続（with文で自動的にクローズされる）
     with get_connection() as conn:
         # SQL実行のためのカーソルを取得

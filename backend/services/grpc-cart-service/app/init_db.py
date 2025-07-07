@@ -3,7 +3,7 @@ from db.db import get_connection
 
 
 # テーブルを初期化する関数
-def init_tables():
+def init_tables() -> None:
     # データベースに接続（with文で自動的にクローズされる）
     with get_connection() as conn:
         # SQLを実行するためのカーソルを作成
