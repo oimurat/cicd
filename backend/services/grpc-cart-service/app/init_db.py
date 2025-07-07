@@ -1,6 +1,7 @@
 # データベース接続関数をインポート
 from db.db import get_connection
 
+
 # テーブルを初期化する関数
 def init_tables():
     # データベースに接続（with文で自動的にクローズされる）
@@ -30,6 +31,7 @@ def init_tables():
         # すべての変更をデータベースに保存（コミット）
         conn.commit()
         print("Tables created successfully.", flush=True)
+
 
 # スクリプトが直接実行された場合、テーブル初期化関数を呼び出す
 if __name__ == "__main__":

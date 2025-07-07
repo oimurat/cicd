@@ -1,9 +1,11 @@
 # 必要なライブラリをインポート
 import asyncio  # 非同期処理を扱う標準ライブラリ
-import aio_pika  # RabbitMQ と非同期通信するためのライブラリ
 import json  # JSON データの変換用
+
+import aio_pika  # RabbitMQ と非同期通信するためのライブラリ
 from temporalio.client import Client  # Temporal のクライアントライブラリ
 from workflow import OrderWorkflow  # 定義済みのワークフローをインポート
+
 
 # メイン関数（非同期で実行される）
 async def main():
@@ -25,7 +27,6 @@ async def main():
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:  # 新しいメッセージが来るたびに繰り返し
             async with message.process():  # メッセージの処理開始（ACK自動送信）
-
                 # メッセージの本文を JSON として読み込む
                 data = json.loads(message.body)
                 print(f"[Consumer] Event received: {data}", flush=True)
@@ -39,13 +40,14 @@ async def main():
 
                 # Temporal ワークフローを起動（IDと商品IDを引数に渡す）
                 await client.start_workflow(
-                    OrderWorkflow.run,         # 実行するワークフロー関数
-                    args=[id, item_id],        # ワークフローに渡す引数
-                    id=f"order-{id}",          # 一意のワークフローID（重複防止）
-                    task_queue="order-task-queue"  # ワークフローが処理されるタスクキュー名
+                    OrderWorkflow.run,  # 実行するワークフロー関数
+                    args=[id, item_id],  # ワークフローに渡す引数
+                    id=f"order-{id}",  # 一意のワークフローID（重複防止）
+                    task_queue="order-task-queue",  # ワークフローが処理されるタスクキュー名
                 )
 
                 print(f"[✓] Started workflow for {id}", flush=True)
+
 
 # Pythonスクリプトとして直接実行された場合、main()を実行
 if __name__ == "__main__":

@@ -1,13 +1,15 @@
-import psycopg2
 from contextlib import contextmanager
+
+import psycopg2
 
 DB_CONFIG = {
     "host": "microservice-db",
     "port": "5432",
     "dbname": "appdb",
     "user": "appuser",
-    "password": "apppass"
+    "password": "apppass",
 }
+
 
 @contextmanager
 def get_connection():

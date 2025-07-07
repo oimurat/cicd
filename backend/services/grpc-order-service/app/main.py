@@ -1,8 +1,11 @@
 # 非同期処理のための asyncio と、Orderサービス実装を含む service モジュールをインポート
-import asyncio, service
+import asyncio
 
 # gRPCの基本機能と、自動生成された order_pb2_grpc（gRPC定義）をインポート
-import grpc, order_pb2_grpc
+import grpc
+import order_pb2_grpc
+import service
+
 
 # gRPCサーバーを起動する非同期関数
 async def serve():
@@ -21,6 +24,7 @@ async def serve():
 
     # サーバーが終了されるまで処理を待つ（通常はずっと実行され続ける）
     await server.wait_for_termination()
+
 
 # スクリプトが直接実行されたときに gRPC サーバーを起動する
 if __name__ == "__main__":

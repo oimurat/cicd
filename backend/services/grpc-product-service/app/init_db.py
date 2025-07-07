@@ -1,5 +1,6 @@
 from db.db import get_connection
 
+
 def init_tables():
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -24,6 +25,7 @@ def init_tables():
 
         conn.commit()
         print("Tables created successfully.", flush=True)
+
 
 if __name__ == "__main__":
     init_tables()

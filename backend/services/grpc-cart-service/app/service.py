@@ -1,12 +1,13 @@
 # gRPCメッセージとサービス定義（自動生成されたファイル）をインポート
-import cart_pb2, cart_pb2_grpc
+import cart_pb2
+import cart_pb2_grpc
 
 # データベース操作用の関数をインポート（create_cart, get_cart_by_id）
 from model import create_cart, get_cart_by_id
 
+
 # CartService（gRPCサービスの実装クラス）
 class CartService(cart_pb2_grpc.CartServiceServicer):
-
     # カート情報を取得する処理（GetCart RPC）
     def GetCart(self, request, context):
         # データベースから指定されたIDのカート情報を取得
@@ -36,9 +37,7 @@ class CartService(cart_pb2_grpc.CartServiceServicer):
 
         # モデル層の関数を使って、カートをデータベースに追加
         create_cart(
-            id=request.id,
-            product_id=request.product_id,
-            quantity=request.quantity
+            id=request.id, product_id=request.product_id, quantity=request.quantity
         )
 
         # 成功メッセージを返す
