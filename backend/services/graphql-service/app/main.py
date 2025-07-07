@@ -48,4 +48,5 @@ async def graphql_ui():
     with open(os.path.join(static_dir, "graphql_ui.html")) as f:
         return f.read()
 
+
 print("GraphQL service is running...")
