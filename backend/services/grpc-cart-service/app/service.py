@@ -11,7 +11,7 @@ from model import create_cart, get_cart_by_id
 class CartService(cart_pb2_grpc.CartServiceServicer):
     # カート情報を取得する処理（GetCart RPC）
     def GetCart(
-        self, request: cart_pb2.CartRequest, context: grpc.ServicerContext
+        self, request: cart_pb2.GetCartRequest, context: grpc.ServicerContext
     ) -> cart_pb2.CartResponse:
         """指定されたIDのカート情報を取得します。"""
         # データベースからカート情報を取得

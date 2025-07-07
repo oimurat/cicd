@@ -1,4 +1,5 @@
 # 自動生成されたgRPCのメッセージクラスとサービスクラスをインポート
+import grpc  # contextの型ヒントのためにインポート
 import order_pb2
 import order_pb2_grpc
 
@@ -6,7 +7,9 @@ import order_pb2_grpc
 # OrderService の実装（gRPCサービスの中身を定義）
 class OrderService(order_pb2_grpc.OrderServiceServicer):
     # 注文を処理するメソッド（gRPCリクエストを受けて返す）
-    def PlaceOrder(self, request, context):
+    def PlaceOrder(
+        self, request: order_pb2.OrderRequest, context: grpc.ServicerContext
+    ) -> order_pb2.OrderResponse:
         # リクエストの内容をログに出力（どの注文IDか確認）
         print(f"[OrderService] PlaceOrder requested: {request.id}", flush=True)
 
@@ -17,7 +20,9 @@ class OrderService(order_pb2_grpc.OrderServiceServicer):
         )
 
     # 注文の返金処理をするメソッド
-    def RefundOrder(self, request, context):
+    def RefundOrder(
+        self, request: order_pb2.RefundRequest, context: grpc.ServicerContext
+    ) -> order_pb2.OrderResponse:
         # 返金対象の注文IDをログ出力
         print(f"[OrderService] RefundOrder requested: {request.id}", flush=True)
 

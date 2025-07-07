@@ -14,7 +14,7 @@ from temporalio.common import RetryPolicy
 class OrderWorkflow:
     # ワークフローのメイン処理
     @workflow.run
-    async def run(self, id: str, item_id: str):
+    async def run(self, id: str, item_id: str) -> None:
         try:
             # =======================
             # 1. 注文アクティビティを実行

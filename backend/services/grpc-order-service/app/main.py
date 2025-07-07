@@ -8,7 +8,7 @@ import service
 
 
 # gRPCサーバーを起動する非同期関数
-async def serve():
+async def serve() -> None:
     # 非同期対応の gRPC サーバーを作成
     server = grpc.aio.server()
 

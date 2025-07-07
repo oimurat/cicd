@@ -25,7 +25,7 @@ product_stub = product_pb2_grpc.ProductServiceStub(product_channel)
 
 
 # 非同期Kafkaコンシューマー処理
-async def consume():
+async def consume() -> None:
     # Kafkaコンシューマー初期化（トピック、接続先、グループ指定）
     consumer = AIOKafkaConsumer(
         KAFKA_TOPIC,
@@ -63,7 +63,7 @@ async def consume():
 
 
 # Kafka メッセージから商品を更新する処理（gRPC呼び出し）
-def handle_product_update(data: dict):
+def handle_product_update(data: dict) -> None:
     try:
         # データを gRPC のリクエスト形式に変換
         request = product_pb2.UpdateProductRequest(
@@ -79,3 +79,6 @@ def handle_product_update(data: dict):
 
     except grpc.RpcError as e:
         log.error(f"❌ gRPC call failed: {e.details()}")
+
+if __name__ == "__main__":
+    asyncio.run(consume())

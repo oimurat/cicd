@@ -12,7 +12,7 @@ from workflow import OrderWorkflow  # 定義したワークフローをインポ
 
 
 # メイン関数（非同期）
-async def main():
+async def main() -> None:
     # Temporal サーバーに接続（ワークフローやアクティビティを登録するため）
     client = await Client.connect("temporal:7233")
 

@@ -4,7 +4,7 @@ import os
 
 import uvicorn
 from aiokafka import AIOKafkaProducer
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 # -----------------------------
 # 設定
@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 app = FastAPI()
 
 # グローバルProducer（起動時に作成・再利用）
-producer: AIOKafkaProducer = None
+producer: AIOKafkaProducer | None = None
 
 # -----------------------------
 # ライフサイクルイベント
@@ -30,7 +30,7 @@ producer: AIOKafkaProducer = None
 
 
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     global producer
     log.info("🚀 Kafka Producer starting...")
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
@@ -39,10 +39,11 @@ async def startup_event():
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
+async def shutdown_event() -> None:
     global producer
     log.info("🛑 Kafka Producer shutting down...")
-    await producer.stop()
+    if producer:
+        await producer.stop()
     log.info("Kafka Producer stopped.")
 
 
@@ -52,11 +53,13 @@ async def shutdown_event():
 
 
 @app.post("/update_product/")
-async def update_products(products: list[dict]):
+async def update_products(products: list[dict]) -> dict:
     """
     Kafkaに複数の商品情報を送信するエンドポイント
     """
-    global producer
+    # Mypyエラーを解消するため、producerがNoneでないことをチェック
+    if not producer:
+        raise HTTPException(status_code=503, detail="Kafka producer is not available.")
 
     results = []
     for product in products:
@@ -64,6 +67,7 @@ async def update_products(products: list[dict]):
         message = {"type": "update_product", "payload": product}
         value_json = json.dumps(message).encode("utf-8")
         try:
+            # この時点でproducerはNoneではないことが保証されている
             await producer.send_and_wait(KAFKA_TOPIC, value_json)
             log.info(f"✅ Sent product {product.get('id')} to Kafka")
             results.append({"status": "success", "id": product.get("id")})
@@ -80,7 +84,7 @@ async def update_products(products: list[dict]):
 # ヘルスチェック用エンドポイント
 # -----------------------------
 @app.get("/health/")  # ヘルスチェック用エンドポイントを追加
-async def health_check():
+async def health_check() -> dict:
     """
     ヘルスチェック用エンドポイント
     ルートへのGETリクエストに対し、ステータスコード200と{"status": "ok"}を返す

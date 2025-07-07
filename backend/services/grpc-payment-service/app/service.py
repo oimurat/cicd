@@ -1,6 +1,5 @@
-# HTTP通信を行うためのrequestsライブラリ（今は未使用だが今後の拡張に備えてインポート）
-
 # 自動生成されたgRPC関連のモジュールをインポート
+import grpc  # contextの型ヒントのためにインポート
 import payment_pb2
 import payment_pb2_grpc
 
@@ -8,7 +7,9 @@ import payment_pb2_grpc
 # PaymentServiceの実装クラス（gRPCサービスの中身を書く場所）
 class PaymentService(payment_pb2_grpc.PaymentServiceServicer):
     # gRPC経由で呼び出される決済処理メソッド
-    def PayOrder(self, request, context):
+    def PayOrder(
+        self, request: payment_pb2.PaymentRequest, context: grpc.ServicerContext
+    ) -> payment_pb2.PaymentResponse:
         # リクエスト情報（注文IDと金額）をログ出力
         print(f"決済処理: Order ID={request.order_id}, Amount={request.amount}")
 

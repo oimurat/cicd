@@ -8,7 +8,7 @@ from workflow import OrderWorkflow  # 定義済みのワークフローをイン
 
 
 # メイン関数（非同期で実行される）
-async def main():
+async def main() -> None:
     print("[Consumer] consumer.py started", flush=True)
 
     # RabbitMQ に接続（接続が切れても自動で再接続してくれる）

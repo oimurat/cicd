@@ -20,7 +20,7 @@ payment_stub = payment_pb2_grpc.PaymentServiceStub(payment_channel)
 # 商品注文の処理を行うアクティビティ
 # ------------------------
 @activity.defn
-async def process_order(id: str, item_id: str):
+async def process_order(id: str, item_id: str) -> str:
     quantity = 1  # 数量は固定で1（本番では柔軟にすることも多い）
 
     # gRPC のリクエストメッセージを作成
@@ -40,7 +40,7 @@ async def process_order(id: str, item_id: str):
 # 決済処理を行うアクティビティ
 # ------------------------
 @activity.defn
-async def charge_payment(order_id: str):
+async def charge_payment(order_id: str) -> str:
     amount = 1000  # 金額は固定（例：テスト環境）。本番では柔軟に。
 
     # 決済リクエストを作成
@@ -58,7 +58,7 @@ async def charge_payment(order_id: str):
 # 注文キャンセル（返金）処理のアクティビティ
 # ------------------------
 @activity.defn
-async def refund_order(id: str):
+async def refund_order(id: str) -> str:
     # 返金リクエストを作成
     request = order_pb2.RefundRequest(id=id)
 

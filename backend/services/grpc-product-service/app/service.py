@@ -1,4 +1,5 @@
 # gRPCで自動生成されたメッセージ・サービス定義をインポート
+import grpc  # contextの型ヒントのためにインポート
 import product_pb2
 import product_pb2_grpc
 
@@ -9,7 +10,9 @@ from model import get_product_by_id, update_or_create_product
 # 商品サービス（gRPCサービスの実装）
 class ProductService(product_pb2_grpc.ProductServiceServicer):
     # 商品をIDで取得するメソッド
-    def GetProduct(self, request, context):
+    def GetProduct(
+        self, request: product_pb2.GetProductRequest, context: grpc.ServicerContext
+    ) -> product_pb2.ProductResponse:
         print(f"gRPC Request: id={request.id}, fields={request.fields}", flush=True)
 
         # DBから商品情報を取得
@@ -30,7 +33,9 @@ class ProductService(product_pb2_grpc.ProductServiceServicer):
         return product_pb2.ProductResponse(product=product)
 
     # 商品を更新または新規作成するメソッド
-    def UpdateProduct(self, request, context):
+    def UpdateProduct(
+        self, request: product_pb2.UpdateProductRequest, context: grpc.ServicerContext
+    ) -> product_pb2.ProductResponse:
         print(f"gRPC Request: id={request.id}", flush=True)
 
         # リクエストから商品情報を取得
