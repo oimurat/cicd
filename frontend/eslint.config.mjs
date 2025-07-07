@@ -41,8 +41,8 @@ export default tseslint.config(
                 },
                 {
                     selector: 'variable',
-                    modifiers: ['const'],
-                    format: ['UPPER_CASE'],
+                    modifiers: ['exported'],
+                    format: ['PascalCase', 'strictCamelCase'],
                 },
                 {
                     selector: 'function',
