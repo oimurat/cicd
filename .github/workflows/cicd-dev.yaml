@@ -125,15 +125,20 @@ jobs:
             - name: Run Mypy # Mypyで型チェックを実施
               run: |
                   cd backend
-                  mypy services/graphql-service \
-                        services/grpc-cart-service \
-                        services/grpc-order-service \
-                        services/grpc-payment-service \
-                        services/grpc-product-service \
-                        services/kafka-api \
-                        services/kafka-worker \
-                        services/workflow-service \
-                        shared
+                  for service in \
+                    services/graphql-service \
+                    services/grpc-cart-service \
+                    services/grpc-order-service \
+                    services/grpc-payment-service \
+                    services/grpc-product-service \
+                    services/kafka-api \
+                    services/kafka-worker \
+                    services/workflow-service \
+                    shared
+                  do
+                    echo "--- Running mypy on $service ---"
+                    mypy "$service"
+                  done
 
             - name: Run pytest # pytestでテストを実行
               run: |
