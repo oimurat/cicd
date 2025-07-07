@@ -17,7 +17,7 @@ def init_tables():
             # products にテストデータ追加
             cur.execute("""
                 INSERT INTO products (id, name, price, description)
-                VALUES 
+                VALUES
                     ('p1', 'Product 1', 19.99, 'Sample product 1'),
                     ('p2', 'Product 2', 29.99, 'Sample product 2')
                 ON CONFLICT (id) DO NOTHING;

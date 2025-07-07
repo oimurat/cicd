@@ -22,7 +22,7 @@ def init_tables():
             # ON CONFLICT (id) DO NOTHING により、すでに同じidのデータがある場合は無視される
             cur.execute("""
                 INSERT INTO carts (id, product_id, quantity)
-                VALUES 
+                VALUES
                     ('c1', 'p1', 2),  -- 商品p1を2個入れたカートc1
                     ('c2', 'p2', 1)   -- 商品p2を1個入れたカートc2
                 ON CONFLICT (id) DO NOTHING;

@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from typing import Dict, List
 
 import uvicorn
 from aiokafka import AIOKafkaProducer
@@ -53,7 +52,7 @@ async def shutdown_event():
 
 
 @app.post("/update_product/")
-async def update_products(products: List[Dict]):
+async def update_products(products: list[dict]):
     """
     Kafkaに複数の商品情報を送信するエンドポイント
     """
