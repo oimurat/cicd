@@ -1,10 +1,11 @@
 # Temporal の Activity（業務処理）定義用ライブラリをインポート
-from temporalio import activity
-
 # gRPC の通信ライブラリと、各サービスの gRPC 定義ファイルをインポート
 import grpc
-import order_pb2, order_pb2_grpc
-import payment_pb2, payment_pb2_grpc
+import order_pb2
+import order_pb2_grpc
+import payment_pb2
+import payment_pb2_grpc
+from temporalio import activity
 
 # gRPC 経由で注文サービスに接続（ホスト名とポート番号指定）
 order_channel = grpc.insecure_channel("grpc-order-service:50053")
@@ -14,13 +15,14 @@ order_stub = order_pb2_grpc.OrderServiceStub(order_channel)  # サービスク�
 payment_channel = grpc.insecure_channel("grpc-payment-service:50054")
 payment_stub = payment_pb2_grpc.PaymentServiceStub(payment_channel)
 
+
 # ------------------------
 # 商品注文の処理を行うアクティビティ
 # ------------------------
 @activity.defn
-async def process_order(id: str, item_id: str):
+async def process_order(id: str, item_id: str) -> str:
     quantity = 1  # 数量は固定で1（本番では柔軟にすることも多い）
-    
+
     # gRPC のリクエストメッセージを作成
     request = order_pb2.OrderRequest(id=id, item_id=item_id, quantity=quantity)
 
@@ -33,13 +35,14 @@ async def process_order(id: str, item_id: str):
     # 処理結果のメッセージを返す（次の処理に使える）
     return response.message
 
+
 # ------------------------
 # 決済処理を行うアクティビティ
 # ------------------------
 @activity.defn
-async def charge_payment(order_id: str):
+async def charge_payment(order_id: str) -> str:
     amount = 1000  # 金額は固定（例：テスト環境）。本番では柔軟に。
-    
+
     # 決済リクエストを作成
     request = payment_pb2.PaymentRequest(order_id=order_id, amount=amount)
 
@@ -50,11 +53,12 @@ async def charge_payment(order_id: str):
 
     return response.message
 
+
 # ------------------------
 # 注文キャンセル（返金）処理のアクティビティ
 # ------------------------
 @activity.defn
-async def refund_order(id: str):
+async def refund_order(id: str) -> str:
     # 返金リクエストを作成
     request = order_pb2.RefundRequest(id=id)
 

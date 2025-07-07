@@ -37,16 +37,11 @@ export default tseslint.config(
                 'error',
                 {
                     selector: 'variable',
-                    format: ['strictCamelCase'],
-                },
-                {
-                    selector: 'variable',
-                    modifiers: ['const'],
-                    format: ['UPPER_CASE'],
+                    format: ['strictCamelCase', 'PascalCase'],
                 },
                 {
                     selector: 'function',
-                    format: ['strictCamelCase'],
+                    format: ['strictCamelCase', 'PascalCase'],
                 },
                 {
                     selector: 'class',

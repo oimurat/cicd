@@ -1,6 +1,7 @@
 # 非同期処理に対応したKafkaコンシューマー関数をインポート
-from consumer import consume
 import asyncio
+
+from consumer import consume
 
 # スクリプトが直接実行された場合（他からimportされた時は実行されない）
 if __name__ == "__main__":

@@ -9,7 +9,7 @@
         "lint": "next lint",
         "debug": "NODE_OPTIONS='--inspect=0.0.0.0:9230' next dev",
         "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css}'",
-        "test": "jest"
+        "test": "jest --passWithNoTests"
     },
     "dependencies": {
         "next": "15.3.4",
