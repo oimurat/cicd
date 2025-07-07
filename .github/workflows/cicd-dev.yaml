@@ -125,7 +125,15 @@ jobs:
             - name: Run Mypy # Mypyで型チェックを実施
               run: |
                   cd backend
-                  mypy .
+                  mypy services/graphql-service \
+                        services/grpc-cart-service \
+                        services/grpc-order-service \
+                        services/grpc-payment-service \
+                        services/grpc-product-service \
+                        services/kafka-api \
+                        services/kafka-worker \
+                        services/workflow-service \
+                        shared
 
             - name: Run pytest # pytestでテストを実行
               run: |
