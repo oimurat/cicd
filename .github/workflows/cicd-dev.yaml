@@ -174,7 +174,7 @@ jobs:
 
             - name: Docker build # Docker イメージをビルド
               working-directory: ./frontend
-              run: docker build . --file frontend/src/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:test-nextjs-${{ github.sha }}
+              run: docker build . --file src/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:test-nextjs-${{ github.sha }}
 
             - name: Login OCIR # OCIR にログイン
               uses: oracle-actions/login-ocir@v1.3.0
