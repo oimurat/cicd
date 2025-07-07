@@ -6,7 +6,7 @@ channel = grpc.insecure_channel("grpc-cart-service:50051")
 stub = cart_pb2_grpc.CartServiceStub(channel)
 
 
-def get_cart_by_id(id: str, fields: list[str]):
+def get_cart_by_id(id: str, fields: list[str]) -> cart_pb2.Cart:
     request = cart_pb2.GetCartRequest(id=id, fields=fields)
 
     response = stub.GetCart(request)

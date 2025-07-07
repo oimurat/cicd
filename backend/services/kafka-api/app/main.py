@@ -1,12 +1,10 @@
-import asyncio
 import json
-import os
-from typing import Dict, List
-
-from fastapi import FastAPI
-from aiokafka import AIOKafkaProducer
 import logging
+import os
+
 import uvicorn
+from aiokafka import AIOKafkaProducer
+from fastapi import FastAPI, HTTPException
 
 # -----------------------------
 # 設定
@@ -16,8 +14,7 @@ KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka-service:90
 
 # ロガー設定
 logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    level=logging.INFO
+    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 log = logging.getLogger(__name__)
 
@@ -25,68 +22,75 @@ log = logging.getLogger(__name__)
 app = FastAPI()
 
 # グローバルProducer（起動時に作成・再利用）
-producer: AIOKafkaProducer = None
+producer: AIOKafkaProducer | None = None
 
 # -----------------------------
 # ライフサイクルイベント
 # -----------------------------
 
+
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     global producer
     log.info("🚀 Kafka Producer starting...")
-    producer = AIOKafkaProducer(
-        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS
-    )
+    producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
     await producer.start()
     log.info("Kafka Producer started.")
 
+
 @app.on_event("shutdown")
-async def shutdown_event():
+async def shutdown_event() -> None:
     global producer
     log.info("🛑 Kafka Producer shutting down...")
-    await producer.stop()
+    if producer:
+        await producer.stop()
     log.info("Kafka Producer stopped.")
+
 
 # -----------------------------
 # エンドポイント（複数対応）
 # -----------------------------
 
+
 @app.post("/update_product/")
-async def update_products(products: List[Dict]):
+async def update_products(products: list[dict]) -> dict:
     """
     Kafkaに複数の商品情報を送信するエンドポイント
     """
-    global producer
+    # Mypyエラーを解消するため、producerがNoneでないことをチェック
+    if not producer:
+        raise HTTPException(status_code=503, detail="Kafka producer is not available.")
 
     results = []
     for product in products:
         log.info(f"📤 Sending message to Kafka: {product}")
-        message = {
-            "type": "update_product",
-            "payload": product
-        }
+        message = {"type": "update_product", "payload": product}
         value_json = json.dumps(message).encode("utf-8")
         try:
+            # この時点でproducerはNoneではないことが保証されている
             await producer.send_and_wait(KAFKA_TOPIC, value_json)
             log.info(f"✅ Sent product {product.get('id')} to Kafka")
             results.append({"status": "success", "id": product.get("id")})
         except Exception as e:
             log.error(f"❌ Failed to send product {product.get('id')}: {e}")
-            results.append({"status": "error", "id": product.get("id"), "error": str(e)})
+            results.append(
+                {"status": "error", "id": product.get("id"), "error": str(e)}
+            )
 
     return {"message": f"{len(results)} products processed.", "results": results}
+
 
 # -----------------------------
 # ヘルスチェック用エンドポイント
 # -----------------------------
-@app.get("/health/") # ヘルスチェック用エンドポイントを追加
-async def health_check():
+@app.get("/health/")  # ヘルスチェック用エンドポイントを追加
+async def health_check() -> dict:
     """
     ヘルスチェック用エンドポイント
     ルートへのGETリクエストに対し、ステータスコード200と{"status": "ok"}を返す
     """
     return {"status": "ok"}
+
 
 # -----------------------------
 # ローカル実行用

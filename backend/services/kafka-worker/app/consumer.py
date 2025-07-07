@@ -1,14 +1,14 @@
 import asyncio
-import os
 import json
 import logging
-import grpc
+import os
 
-from aiokafka import AIOKafkaConsumer
+import grpc
 
 # gRPC モジュール（product.proto から生成されている想定）
 import product_pb2
 import product_pb2_grpc
+from aiokafka import AIOKafkaConsumer
 
 # ロガー設定（見やすくログを表示）
 logging.basicConfig(level=logging.INFO)
@@ -23,14 +23,15 @@ KAFKA_CONSUMER_GROUP = os.getenv("KAFKA_CONSUMER_GROUP", "product-consumer-group
 product_channel = grpc.insecure_channel("grpc-product-service:50052")
 product_stub = product_pb2_grpc.ProductServiceStub(product_channel)
 
+
 # 非同期Kafkaコンシューマー処理
-async def consume():
+async def consume() -> None:
     # Kafkaコンシューマー初期化（トピック、接続先、グループ指定）
     consumer = AIOKafkaConsumer(
         KAFKA_TOPIC,
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
         group_id=KAFKA_CONSUMER_GROUP,
-        enable_auto_commit=True
+        enable_auto_commit=True,
     )
 
     await consumer.start()
@@ -60,15 +61,16 @@ async def consume():
         await consumer.stop()
         log.info("🛑 Kafka consumer stopped.")
 
+
 # Kafka メッセージから商品を更新する処理（gRPC呼び出し）
-def handle_product_update(data: dict):
+def handle_product_update(data: dict) -> None:
     try:
         # データを gRPC のリクエスト形式に変換
         request = product_pb2.UpdateProductRequest(
             id=data.get("id"),
             name=data.get("name"),
             price=data.get("price"),
-            description=data.get("description")
+            description=data.get("description"),
         )
 
         # ProductService の gRPC メソッドを呼び出し
@@ -77,3 +79,7 @@ def handle_product_update(data: dict):
 
     except grpc.RpcError as e:
         log.error(f"❌ gRPC call failed: {e.details()}")
+
+
+if __name__ == "__main__":
+    asyncio.run(consume())

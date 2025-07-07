@@ -1,14 +1,18 @@
 # gRPCで自動生成されたメッセージ・サービス定義をインポート
-import product_pb2, product_pb2_grpc
+import grpc  # contextの型ヒントのためにインポート
+import product_pb2
+import product_pb2_grpc
 
 # 商品取得・更新処理の関数をインポート（model.py）
 from model import get_product_by_id, update_or_create_product
 
+
 # 商品サービス（gRPCサービスの実装）
 class ProductService(product_pb2_grpc.ProductServiceServicer):
-
     # 商品をIDで取得するメソッド
-    def GetProduct(self, request, context):
+    def GetProduct(
+        self, request: product_pb2.GetProductRequest, context: grpc.ServicerContext
+    ) -> product_pb2.ProductResponse:
         print(f"gRPC Request: id={request.id}, fields={request.fields}", flush=True)
 
         # DBから商品情報を取得
@@ -29,7 +33,9 @@ class ProductService(product_pb2_grpc.ProductServiceServicer):
         return product_pb2.ProductResponse(product=product)
 
     # 商品を更新または新規作成するメソッド
-    def UpdateProduct(self, request, context):
+    def UpdateProduct(
+        self, request: product_pb2.UpdateProductRequest, context: grpc.ServicerContext
+    ) -> product_pb2.ProductResponse:
         print(f"gRPC Request: id={request.id}", flush=True)
 
         # リクエストから商品情報を取得
@@ -46,13 +52,12 @@ class ProductService(product_pb2_grpc.ProductServiceServicer):
         if updated:
             return product_pb2.ProductResponse(
                 product=product_pb2.Product(
-                    id=product_id,
-                    name=name,
-                    price=price,
-                    description=description
+                    id=product_id, name=name, price=price, description=description
                 )
             )
         else:
             # 失敗した場合はエラーメッセージを設定し、status=failed を返す
-            context.set_details(f"Failed to update or create product with ID {product_id}.")
+            context.set_details(
+                f"Failed to update or create product with ID {product_id}."
+            )
             return product_pb2.ProductResponse(status="failed")

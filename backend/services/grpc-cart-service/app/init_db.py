@@ -1,8 +1,9 @@
 # データベース接続関数をインポート
 from db.db import get_connection
 
+
 # テーブルを初期化する関数
-def init_tables():
+def init_tables() -> None:
     # データベースに接続（with文で自動的にクローズされる）
     with get_connection() as conn:
         # SQLを実行するためのカーソルを作成
@@ -21,7 +22,7 @@ def init_tables():
             # ON CONFLICT (id) DO NOTHING により、すでに同じidのデータがある場合は無視される
             cur.execute("""
                 INSERT INTO carts (id, product_id, quantity)
-                VALUES 
+                VALUES
                     ('c1', 'p1', 2),  -- 商品p1を2個入れたカートc1
                     ('c2', 'p2', 1)   -- 商品p2を1個入れたカートc2
                 ON CONFLICT (id) DO NOTHING;
@@ -30,6 +31,7 @@ def init_tables():
         # すべての変更をデータベースに保存（コミット）
         conn.commit()
         print("Tables created successfully.", flush=True)
+
 
 # スクリプトが直接実行された場合、テーブル初期化関数を呼び出す
 if __name__ == "__main__":
