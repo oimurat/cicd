@@ -80,5 +80,6 @@ def handle_product_update(data: dict) -> None:
     except grpc.RpcError as e:
         log.error(f"❌ gRPC call failed: {e.details()}")
 
+
 if __name__ == "__main__":
     asyncio.run(consume())
