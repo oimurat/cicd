@@ -173,6 +173,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Docker build # Docker イメージをビルド
+              working-directory: ./frontend
               run: docker build . --file frontend/src/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:test-nextjs-${{ github.sha }}
 
             - name: Login OCIR # OCIR にログイン
