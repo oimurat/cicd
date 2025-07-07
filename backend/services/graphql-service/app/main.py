@@ -43,7 +43,7 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # /ui エンドポイント：GraphQLのテストUI（例：GraphiQLなど）を表示するHTMLを返す
 @app.get("/ui", response_class=HTMLResponse)
-async def graphql_ui():
+async def graphql_ui() -> str:
     # static/graphql_ui.html を読み込んで返す
     with open(os.path.join(static_dir, "graphql_ui.html")) as f:
         return f.read()
