@@ -49,4 +49,4 @@ async def graphql_ui() -> str:
         return f.read()
 
 
-print("GraphQL service is running...")
+print("test")
