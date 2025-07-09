@@ -95,7 +95,7 @@ jobs:
 
             - name: Docker build # Docker イメージをビルド
               working-directory: ./frontend
-              run: docker build . --file src/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:main-nextjs-$VERSION_TAG
+              run: docker build . --file src/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nextjs-$VERSION_TAG
 
             - name: Login OCIR # OCIR にログイン
               uses: oracle-actions/login-ocir@v1.3.0
@@ -103,7 +103,7 @@ jobs:
                   auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
 
             - name: Push container image # コンテナイメージを OCIR にプッシュ
-              run: docker push nrt.ocir.io/nrcmxxv7sjse/ec_service_test:main-nextjs-$VERSION_TAG
+              run: docker push nrt.ocir.io/nrcmxxv7sjse/ec_service_test:nextjs-$VERSION_TAG
 
     backend-build-and-push: # バックエンドのビルドとプッシュを行うジョブ
         name: Backend Build & Push
@@ -130,7 +130,7 @@ jobs:
                   fetch-depth: 0 # フルクローンする
 
             - name: Docker build # Docker イメージをビルド
-              run: docker build . --file backend/services/${{ matrix.service }}/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:main-${{ matrix.service }}-$VERSION_TAG
+              run: docker build . --file backend/services/${{ matrix.service }}/Dockerfile --tag nrt.ocir.io/nrcmxxv7sjse/ec_service_test:${{ matrix.service }}-$VERSION_TAG
 
             - name: Login OCIR # OCIR にログイン
               uses: oracle-actions/login-ocir@v1.3.0
@@ -138,7 +138,7 @@ jobs:
                   auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
 
             - name: Push container image # コンテナイメージを OCIR にプッシュ
-              run: docker push nrt.ocir.io/nrcmxxv7sjse/ec_service_test:main-${{ matrix.service }}-$VERSION_TAG
+              run: docker push nrt.ocir.io/nrcmxxv7sjse/ec_service_test:${{ matrix.service }}-$VERSION_TAG
 
     dispatch:
         name: Repository Dispatch # 他リポジトリへの接続を行うジョブ
