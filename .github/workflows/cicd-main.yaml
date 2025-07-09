@@ -44,8 +44,8 @@ jobs:
                     major=${BASH_REMATCH[1]}
                     minor=${BASH_REMATCH[2]}
 
-                    # コミットメッセージに [major] が含まれているかチェック
-                    if [[ "$commit_message" == *"[major]"* ]]; then
+                    # コミットメッセージに major が含まれているかチェック
+                    if [[ "$commit_message" == *"major"* ]]; then
                       # メジャーバージョンアップ
                       new_tag="main-v$((major + 1)).0"
                     else
