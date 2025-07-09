@@ -168,4 +168,4 @@ jobs:
                   token: ${{ steps.app-token.outputs.token }}
                   repository: oimurat/manifest # リポジトリ名を指定
                   event-type: update-manifest-main
-                  client-payload: '{"date": "${{ env.VERSION_TAG }}"}'
+                  client-payload: '{"version": "${{ env.VERSION_TAG }}"}'
